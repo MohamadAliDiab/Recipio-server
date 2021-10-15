@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
@@ -12,10 +12,13 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
     "db-migrate": "^1.0.0-beta.16",
     "express": "^4.17.1",
+    "express-validator": "^6.13.0",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
+    "mysql2": "^2.3.0",
     "nodemon": "^2.0.13",
     "validator": "^13.6.0"
   }
