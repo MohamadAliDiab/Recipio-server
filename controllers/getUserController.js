@@ -38,3 +38,40 @@ exports.getUser = async (req,res,next) => {
         next(err);
     }
 }
+
+exports.getRecipes = async (req,res,next) => {
+
+    try{
+
+        if(
+            !req.headers.authorization ||
+            !req.headers.authorization.startsWith('Bearer') ||
+            !req.headers.authorization.split(' ')[1]
+        ){
+            return res.status(422).json({
+                message: "Please provide the token",
+            });
+        }
+
+        const theToken = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(theToken, 'the-super-strong-secrect');
+
+        const [row] = await conn.execute(
+            "SELECT * FROM `recipes`"
+        );
+
+        if(row.length > 0){
+            return res.json({
+                recipe:row[0]
+            });
+        }
+
+        res.json({
+            message:"No recipes found"
+        });
+
+    }
+    catch(err){
+        next(err);
+    }
+}
