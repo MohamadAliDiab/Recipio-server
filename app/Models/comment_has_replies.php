@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class blocked extends Model {
-    protected $table = "blocked";
+class comment_has_replies extends Model
+{
+    protected $table = "comment_has_replies";
 
     public function user()
     {
         return $this->belongsTo(user::class, 'user_id');
     }
-    public function blocked_user()
+
+    public function comment()
     {
-        return $this->belongsTo(user::class, 'blocked_user_id');
+        return $this->belongsTo(user::class, 'comment_id');
     }
 }
-
-?>

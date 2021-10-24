@@ -63,5 +63,52 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-
+    public function recipes()
+    {
+        return $this->hasMany(recipes::class, 'user_id');
+    }
+    public function followers()
+    {
+        return $this->hasMany(user_followers::class, 'user_id');
+    }
+    public function follower_user()
+    {
+        return $this->hasMany(user_followers::class, 'follower_id');
+    }
+    public function blocking_user()
+    {
+        return $this->hasMany(blocked::class, 'user_id');
+    }
+    public function blocked_user()
+    {
+        return $this->hasMany(blocked::class, 'blocked_user_id');
+    }
+    public function comments()
+    {
+        return $this->hasMany(comments::class, 'posted_by');
+    }
+    public function recipe_likes()
+    {
+        return $this->hasMany(recipe_has_likes::class, 'user_id');
+    }
+    public function comment_likes()
+    {
+        return $this->hasMany(comment_has_likes::class, 'user_id');
+    }
+    public function replies()
+    {
+        return $this->hasMany(comment_has_replies::class, 'user_id');
+    }
+    public function replie_likes()
+    {
+        return $this->hasMany(reply_has_likes::class, 'user_id');
+    }
+    public function requested_user()
+    {
+        return $this->hasMany(follow_request::class, 'user_id');
+    }
+    public function follow_requester()
+    {
+        return $this->hasMany(follow_request::class, 'follower_id');
+    }
 }

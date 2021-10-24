@@ -45,24 +45,30 @@ class CreateRecipesTable extends Migration
         Schema::create('recipe_has_likes', function (Blueprint $table) {
             $table->id();
             $table->integer('recipe_id');
-            $table->integer('user_id')->unique();
+            $table->integer('user_id');
             $table->timestamps();
         });
 
-        Schema::create('recipe_has_comments', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->integer('recipe_id');
-            $table->integer('user_id');
             $table->text('body');
             $table->integer('nb_of_likes');
             $table->integer('nb_of_replies');
+            $table->integer('posted_by');
+            $table->timestamps();
+        });
+
+        Schema::create('recipe_has_comment', function (Blueprint $table) {
+            $table->id();
+            $table->integer('recipe_id');
+            $table->integer('comment_id');
             $table->timestamps();
         });
 
         Schema::create('comment_has_likes', function (Blueprint $table) {
             $table->id();
             $table->integer('comment_id');
-            $table->integer('user_id')->unique();
+            $table->integer('user_id');
             $table->timestamps();
         });
 
@@ -77,7 +83,7 @@ class CreateRecipesTable extends Migration
         Schema::create('reply_has_likes', function (Blueprint $table) {
             $table->id();
             $table->integer('reply_id');
-            $table->integer('user_id')->unique();
+            $table->integer('user_id');
             $table->timestamps();
         });
 
