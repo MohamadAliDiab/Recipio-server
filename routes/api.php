@@ -19,6 +19,11 @@ Route::post('register', [UserController::class, 'register'])->name('api:register
 Route::post('/login', [AuthController::class, 'login'])->name('api:login');
 
 Route::group(['middleware' => 'auth.jwt'], function () {
-    Route::get('/search/{keyword}', [UserController::class, 'search'])->name('api:search');
+    Route::post('/block', [UserController::class, 'block'])->name('api:block');
+    Route::post('/unblock', [UserController::class, 'unblock'])->name('api:unblock');
+    Route::post('/postRecipe', [UserController::class, 'postRecipe'])->name('api:postRecipe');
+    Route::get('/getRecipes', [UserController::class, 'getRecipes'])->name('api:getRecipes');
+
+
     Route::post('logout', [AuthController::class, 'logout'])->name('api:logout');
 });
