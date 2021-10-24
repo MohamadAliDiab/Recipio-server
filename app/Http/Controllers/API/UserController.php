@@ -32,6 +32,7 @@ class UserController extends Controller {
         $userBlock->user_id = $id;
         $userBlock->blocked_user_id = $blocked;
         $userBlock->save();
+
         return json_encode("done");
 
     }
