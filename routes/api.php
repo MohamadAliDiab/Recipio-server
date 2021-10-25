@@ -40,5 +40,6 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('/removeLikeRecipe', [UserController::class, 'removeLikeRecipe'])->name('api:removeLikeRecipe');
     Route::post('/removeLikeComment', [UserController::class, 'removeLikeComment'])->name('api:removeLikeComment');
     Route::post('/removeLikeReply', [UserController::class, 'removeLikeReply'])->name('api:removeLikeReply');
+    Route::get('/getTopRecipes', [UserController::class, 'getTopRecipes'])->name('api:getTopRecipes');
     Route::post('logout', [AuthController::class, 'logout'])->name('api:logout');
 });

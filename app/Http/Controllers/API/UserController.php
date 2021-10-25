@@ -382,6 +382,22 @@ class UserController extends Controller {
         }
     }
 
+    function getTopRecipes(){
+
+        $getRecipes = recipes::all()->orderBy('nb_of_likes', 'DESC')->limit(6)->get()->toArray();
+
+        return json_encode($getRecipes);
+    }
+    
+//    function getTopUsers(){
+//
+//        $topUsers = user_followers::count()
+//
+//        $getUsers = User::all()->orderBy('nb_of_likes', 'DESC')->limit(6)->get()->toArray();
+//
+//        return json_encode($getRecipes);
+//    }
+
 }
 
 
