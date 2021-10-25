@@ -27,5 +27,18 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('/addComment', [UserController::class, 'addComment'])->name('api:addComment');
     Route::post('/likeComment', [UserController::class, 'likeComment'])->name('api:likeComment');
     Route::post('/addReply', [UserController::class, 'addReply'])->name('api:addReply');
+    Route::post('/likeReply', [UserController::class, 'likeReply'])->name('api:likeReply');
+    Route::post('/followUser', [UserController::class, 'followUser'])->name('api:followUser');
+    Route::get('/getRequests', [UserController::class, 'getRequests'])->name('api:getRequests');
+    Route::post('/appRequest', [UserController::class, 'appRequest'])->name('api:appRequest');
+    Route::post('/declineReq', [UserController::class, 'declineReq'])->name('api:declineReq');
+    Route::get('/getUserInfo', [UserController::class, 'getUserInfo'])->name('api:getUserInfo');
+    Route::post('/deleteRecipe', [UserController::class, 'deleteRecipe'])->name('api:deleteRecipe');
+    Route::post('/deleteComment', [UserController::class, 'deleteComment'])->name('api:deleteComment');
+    Route::post('/deleteReply', [UserController::class, 'deleteReply'])->name('api:deleteReply');
+    Route::post('/addTag', [UserController::class, 'addTag'])->name('api:addTag');
+    Route::post('/removeLikeRecipe', [UserController::class, 'removeLikeRecipe'])->name('api:removeLikeRecipe');
+    Route::post('/removeLikeComment', [UserController::class, 'removeLikeComment'])->name('api:removeLikeComment');
+    Route::post('/removeLikeReply', [UserController::class, 'removeLikeReply'])->name('api:removeLikeReply');
     Route::post('logout', [AuthController::class, 'logout'])->name('api:logout');
 });

@@ -167,7 +167,221 @@ class UserController extends Controller {
 
     }
 
-    
+    function likeReply(Request $request){
+
+        $user = Auth::user();
+        $id = $user->id;
+        $reply_id = $request->id;
+
+        $searching = reply_has_likes::where('user_id', $id)->where('reply_id', $reply_id)->get()->toArray();
+
+        if (count($searching) == 0) {
+
+            $newLikeRep = new reply_has_likes;
+            $newLikeRep->user_id = $id;
+            $newLikeRep->reply_id = $reply_id;
+            $newLikeRep->save();
+        }
+    }
+
+    function followUser(Request $request){
+
+        $user = Auth::user();
+        $id = $user->id;
+        $follower_id = $request->id;
+
+        $privacy = User::where('id', $follower_id)
+            ->value('private');
+
+        $searching = user_followers::where('user_id', $id)
+            ->where('follower_id', $follower_id)
+            ->get()
+            ->toArray();
+        $searchingReq = follow_request::where('user_id', $id)
+            ->where('follower_id', $follower_id)
+            ->get()
+            ->toArray();
+
+        if ($privacy == 0 && count($searching)==0){
+
+            $new_follower = new user_followers;
+            $new_follower->user_id = $id;
+            $new_follower->follower_id = $follower_id;
+            $new_follower->save();
+
+        }
+        elseif ($privacy == 1 && count($searching)==0 && count($searchingReq) == 0){
+
+            $new_follow_req = new follow_request;
+            $new_follow_req->user_id = $id;
+            $new_follow_req->follower_id = $follower_id;
+            $new_follow_req->status = 0;
+            $new_follow_req->save();
+
+        }
+    }
+
+    function getRequests(){
+        $user = Auth::user();
+        $id = $user->id;
+
+        $getFollowRequests = follow_request::where('user_id' , $id)
+            ->where('status', '0')
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->toArray();
+        return json_encode($getFollowRequests);
+    }
+
+    function appRequest(Request $request){
+        $user = Auth::user();
+        $id = $user->id;
+        $follower_id = $request->follower_id;
+
+        $searching = user_followers::where('user_id', $id)
+            ->where('follower_id', $follower_id)
+            ->get()
+            ->toArray();
+
+        if (count($searching)==0){
+
+            $new_follower = new user_followers;
+            $new_follower->user_id = $id;
+            $new_follower->follower_id = $follower_id;
+            $new_follower->save();
+
+
+            follow_request::where('user_id', $id)
+                ->where('follower_id', $follower_id)
+                ->delete();
+
+        }
+    }
+    function declineReq(Request $request){
+        $user = Auth::user();
+        $id = $user->id;
+        $follower_id = $request->follower_id;
+
+        follow_request::where('user_id', $id)
+            ->where('follower_id', $follower_id)
+            ->delete();
+    }
+
+    function getUserInfo(Request $request){
+        $user_id = $request->id;
+
+        $info = User::where('id', $user_id)
+            ->get()
+            ->toArray();
+
+        return json_encode($info);
+    }
+
+    function deleteRecipe(Request $request){
+        $user = Auth::user();
+        $id = $user->id;
+        $recipe_id = $request->id;
+
+        recipes::where('id', $recipe_id)
+            ->where('posted_by', $id)
+            ->delete();
+    }
+
+    function deleteComment(Request $request){
+        $user = Auth::user();
+        $id = $user->id;
+        $comment_id = $request->id;
+
+        comments::where('id', $comment_id)
+            ->where('posted_by', $id)
+            ->delete();
+        recipe_has_comment::where('$comment_id', $comment_id)
+            ->delete();
+    }
+
+    function deleteReply(Request $request){
+        $user = Auth::user();
+        $id = $user->id;
+        $reply_id = $request->id;
+
+        comment_has_replies::where('id', $reply_id)
+            ->where('user_id', $id)
+            ->delete();
+    }
+//    function createTag(Request $request){
+//        $name = $request->name;
+//
+//        $newTag = new tags;
+//        $newTag->name = $name;
+//        $newTag->save();
+//    }
+    function addTag(Request $request){
+        $tag_name = $request->name;
+        $recipe_id = $request->id;
+
+        $searchForTag = tags::where('name', $tag_name)
+            ->get()
+            ->toArray();
+
+        if (count($searchForTag) == 0){
+
+            $newTag = new tags;
+            $newTag->name = $tag_name;
+            $newTag->save();
+
+            $tagRecipe = new recipe_has_tags;
+            $tagRecipe->recipe_id = $recipe_id;
+            $tagRecipe->tag_id = $newTag->id;
+            $tagRecipe->save();
+        }
+        else{
+
+            $existingTag = $searchForTag[0]->id;
+
+            $tagRecipe = new recipe_has_tags;
+            $tagRecipe->recipe_id = $recipe_id;
+            $tagRecipe->tag_id = $existingTag;
+            $tagRecipe->save();
+        }
+    }
+    function removeLikeRecipe(Request $request){
+        $user = Auth::user();
+        $id = $user->id;
+        $recipe_id = $request->id;
+
+        $likesExists = recipe_has_likes::where('recipe_id', $recipe_id)->where('user_id', $id)->get()->toArray();
+
+        if (count($likesExists) == 1) {
+            recipe_has_likes::where('recipe_id', $recipe_id)->where('user_id', $id)->delete();
+            recipes::where('id', $recipe_id)->decrement('nb_of_likes');
+        }
+    }
+
+    function removeLikeComment(Request $request){
+        $user = Auth::user();
+        $id = $user->id;
+        $comment_id = $request->id;
+
+        $likesExists = comment_has_likes::where('comment_id', $comment_id)->where('user_id', $id)->get()->toArray();
+
+        if (count($likesExists) == 1) {
+            comment_has_likes::where('comment_id', $comment_id)->where('user_id', $id)->delete();
+            comments::where('id', $comment_id)->decrement('nb_of_likes');
+        }
+    }
+
+    function removeLikeReply(Request $request){
+        $user = Auth::user();
+        $id = $user->id;
+        $reply_id = $request->id;
+
+        $likesExists = reply_has_likes::where('reply_id', $reply_id)->where('user_id', $id)->get()->toArray();
+
+        if (count($likesExists) == 1) {
+            reply_has_likes::where('reply_id', $reply_id)->where('user_id', $id)->delete();
+        }
+    }
+
 }
 
 
